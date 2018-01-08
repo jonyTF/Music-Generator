@@ -4,6 +4,6 @@
 #include "LSDL.h"
 
 bool handleEvents( SDL_Event e ); //returns whether or not to quit
-void storeInput(); //stores the space presses
+void storeInput( float time ); //stores the space presses. takes in the time between each frame
 
 #endif

@@ -23,13 +23,21 @@ int main( int argc, char* argv[] )
         bool quit = false;
         SDL_Event e;
 
+        //timer to get time between frames
+        Uint32 startTime = 0;
+
         while ( !quit )
         {
             if ( handleEvents( e ) )
             {
                 quit = true;
             }
-            storeInput();
+            float time = SDL_GetTicks() - startTime;
+
+            storeInput( time );
+
+            //restart timer
+            startTime = SDL_GetTicks();
 
             render();
         }
@@ -57,7 +65,7 @@ bool init()
         }
         else
         {
-            gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
+            gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
             if ( gRenderer == NULL )
             {
                 printf( "Could not create renderer. Error: %s\n", SDL_GetError() );
