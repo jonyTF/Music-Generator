@@ -2,6 +2,7 @@
 #include "../include/input.h"
 
 bool init();
+bool loadMedia();
 void close();
 void render();
 
@@ -10,7 +11,7 @@ const int SCREEN_HEIGHT = 600;
 
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
-Mix_Music* gMusic = NULL;
+Mix_Chunk* gBeepSound = NULL;
 
 int main( int argc, char* argv[] )
 {
@@ -88,13 +89,30 @@ bool init()
     return success;
 }
 
+bool loadMedia()
+{
+    success = true;
+
+    gBeepSound = Mix_LoadWAV( "../sound/beep.wav" );
+    if ( gBeepSound == NULL )
+    {
+        printf( "Could not load beep.wav.\n" );
+    }
+
+    return success;
+}
+
 void close()
 {
+    Mix_FreeChunk( gBeepSound );
+    gBeepSound = NULL;
+
     SDL_DestroyRenderer( gRenderer );
     SDL_DestroyWindow( gWindow );
     gRenderer = NULL;
     gWindow = NULL;
 
+    Mix_Quit();
     SDL_Quit();
 }
 
