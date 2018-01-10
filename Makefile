@@ -1,5 +1,5 @@
 #Which files to compile
-OBJS = src/main.cpp src/input.cpp
+OBJS = src/main.cpp src/input.cpp src/sound.cpp
 
 #Which compiler:
 CC = g++

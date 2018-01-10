@@ -1,5 +1,6 @@
 #include "../include/LSDL.h"
 #include "../include/input.h"
+#include "../include/sound.h"
 
 bool init();
 bool loadMedia();
@@ -11,7 +12,6 @@ const int SCREEN_HEIGHT = 600;
 
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
-Mix_Chunk* gBeepSound = NULL;
 
 int main( int argc, char* argv[] )
 {
@@ -21,26 +21,33 @@ int main( int argc, char* argv[] )
     }
     else
     {
-        bool quit = false;
-        SDL_Event e;
-
-        //timer to get time between frames
-        Uint32 startTime = 0;
-
-        while ( !quit )
+        if ( !loadSound() )
         {
-            if ( handleEvents( e ) )
+            printf( "Could not load sound.\n" );
+        }
+        else
+        {
+            bool quit = false;
+            SDL_Event e;
+
+            //timer to get time between frames
+            Uint32 startTime = 0;
+
+            while ( !quit )
             {
-                quit = true;
+                if ( handleEvents( e ) )
+                {
+                    quit = true;
+                }
+                float time = SDL_GetTicks() - startTime;
+
+                storeInput( time );
+
+                //restart timer
+                startTime = SDL_GetTicks();
+
+                render();
             }
-            float time = SDL_GetTicks() - startTime;
-
-            storeInput( time );
-
-            //restart timer
-            startTime = SDL_GetTicks();
-
-            render();
         }
     }
 
@@ -89,23 +96,9 @@ bool init()
     return success;
 }
 
-bool loadMedia()
-{
-    success = true;
-
-    gBeepSound = Mix_LoadWAV( "../sound/beep.wav" );
-    if ( gBeepSound == NULL )
-    {
-        printf( "Could not load beep.wav.\n" );
-    }
-
-    return success;
-}
-
 void close()
 {
-    Mix_FreeChunk( gBeepSound );
-    gBeepSound = NULL;
+    freeSound();
 
     SDL_DestroyRenderer( gRenderer );
     SDL_DestroyWindow( gWindow );
