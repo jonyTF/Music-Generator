@@ -10,7 +10,7 @@ const int SCREEN_HEIGHT = 600;
 
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
-
+Mix_Music* gMusic = NULL;
 
 int main( int argc, char* argv[] )
 {
@@ -50,7 +50,7 @@ bool init()
 {
     bool success = true;
 
-    if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
+    if ( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0 )
     {
         printf( "Could not initialize SDL. Error: %s\n", SDL_GetError() );
         success = false;
@@ -74,6 +74,13 @@ bool init()
             else
             {
                 SDL_SetRenderDrawColor( gRenderer, 0x00, 0x00, 0x00, 0xFF );
+
+                //init audio mixer
+                if ( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+                {
+                    printf( "SDL_Mixer Could not initialize. Error: %s\n", Mix_GetError() );
+                    success = false;
+                }
             }
         }
     }
