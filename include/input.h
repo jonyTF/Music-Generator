@@ -5,5 +5,6 @@
 
 bool handleEvents( SDL_Event e ); //returns whether or not to quit
 void storeInput( float time ); //stores the space presses. takes in the time between each frame
+void playInput();
 
 #endif
