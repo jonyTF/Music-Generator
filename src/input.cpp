@@ -76,7 +76,7 @@ void storeInput( float time )
             float noteLength = ( 60.f * 1000.f ) / gBPM / NOTES_PER_BEAT;
             if ( gCurrentTime >= noteLength )
             {
-                gSpacePresses[ gCurrentNote ] = gSpaceDown ? 1 : 0;
+                gSpacePresses[ gCurrentNote ] = gSpaceDown ? BEEP : SILENCE;
                 gCurrentTime = 0;
                 gCurrentNote++;
             }
