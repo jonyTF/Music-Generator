@@ -76,6 +76,7 @@ void storeInput( float time )
             float noteLength = ( 60.f * 1000.f ) / gBPM / NOTES_PER_BEAT;
             if ( gCurrentTime >= noteLength )
             {
+                printf( "Current Time : %f, vs noteLength : %f\n", gCurrentTime, noteLength );
                 gSpacePresses[ gCurrentNote ] = gSpaceDown ? BEEP : SILENCE;
                 gCurrentTime = 0;
                 gCurrentNote++;
