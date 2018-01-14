@@ -42,6 +42,8 @@ int main( int argc, char* argv[] )
                 float time = SDL_GetTicks() - startTime;
 
                 storeInput( time );
+                playInput();
+                printf( "lol\n" );
 
                 //restart timer
                 startTime = SDL_GetTicks();

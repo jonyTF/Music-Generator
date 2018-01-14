@@ -3,6 +3,7 @@
 
 bool gSpaceDown = false;
 bool gStart = false; //Whether user has started inputting rhythm
+bool gPlayInput = false; //whether to play the input
 
 const int NUM_MEASURES = 4;
 const int BEATS_PER_MEASURE = 4;
@@ -30,7 +31,7 @@ bool handleEvents( SDL_Event e )
 
                 case SDLK_q:
                     printf( "paly\n" );
-                    playInput();
+                    startPlayingInput();
                     break;
 
                 default:
@@ -84,6 +85,8 @@ void storeInput( float time )
         }
         else
         {
+            gStart = false;
+            gCurrentNote = 0;
             printf( "done\n" );
             /*
             printf( "[" );
@@ -98,10 +101,43 @@ void storeInput( float time )
     }
 }
 
+void startPlayingInput()
+{
+    gPlayInput = true;
+    /*for ( int i = 0; i < sizeof( gSpacePresses ) / sizeof( gSpacePresses[0] ); i++ )
+    {
+
+        playSound( gSpacePresses[ i ], ( int )( ( 60.f * 1000.f ) / gBPM / NOTES_PER_BEAT ) );
+    }*/
+}
+
 void playInput()
 {
-    for ( int i = 0; i < sizeof( gSpacePresses ) / sizeof( gSpacePresses[0] ); i++ )
+    if ( gPlayInput )
     {
-        playSound( gSpacePresses[ i ], ( int )( ( 60.f * 1000.f ) / gBPM / NOTES_PER_BEAT ) );
+        if ( gCurrentNote < sizeof( gSpacePresses ) / sizeof( gSpacePresses[0] ) )
+        {
+            float noteLength = ( 60.f * 1000.f ) / gBPM / NOTES_PER_BEAT;
+            if ( gSpacePresses[ gCurrentNote ] == BEEP )
+            {
+                float totalLength = noteLength;
+                for ( int i = gCurrentNote + 1; i < sizeof( gSpacePresses ) / sizeof( gSpacePresses[0] ); i++ )
+                {
+                    //ATTENTION: NEED TO MAKE A CASE IF the for loop meets the i < spacepress length condition
+                    if ( gSpacePresses[ i ] == BEEP )
+                    {
+                        totalLength += noteLength;
+                    }
+                    else
+                    {
+                        gCurrentNote = i - 1; // minus one because gCurrentNote++ at the end
+                        break;
+                    }
+                }
+                noteLength = totalLength;
+            }
+            playSound( gSpacePresses[ gCurrentNote ], noteLength );
+            gCurrentNote++;
+        }
     }
 }
