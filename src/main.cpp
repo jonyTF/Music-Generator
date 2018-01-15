@@ -30,23 +30,14 @@ int main( int argc, char* argv[] )
             bool quit = false;
             SDL_Event e;
 
-            //timer to get time between frames
-            Uint32 startTime = 0;
-
             while ( !quit )
             {
                 if ( handleEvents( e ) )
                 {
                     quit = true;
                 }
-                Uint32 time = SDL_GetTicks() - startTime;
 
-                storeInput( time );
-                playInput();
-                //printf( "lol\n" );
-
-                //restart timer
-                startTime = SDL_GetTicks();
+                //storeInput();
 
                 render();
             }

@@ -1,5 +1,6 @@
 #include "../include/input.h"
 #include "../include/sound.h"
+#include <list>
 
 //TODO: instead, just start SDL_Timer when space is pressed, then stop when it is released
 //      start it when it is released, then stop when it is started. This way, i can get the durations
@@ -30,12 +31,17 @@ bool handleEvents( SDL_Event e )
             switch ( e.key.keysym.sym )
             {
                 case SDLK_SPACE:
-                    gSpaceDown = true;
+                    spaceDown();
                     break;
 
                 case SDLK_q:
                     printf( "paly\n" );
-                    startPlayingInput();
+                    //startPlayingInput();
+                    break;
+
+                case SDLK_w:
+                    printf( "stop\n" );
+                    inputDone();
                     break;
 
                 default:
@@ -47,8 +53,7 @@ bool handleEvents( SDL_Event e )
             switch ( e.key.keysym.sym )
             {
                 case SDLK_SPACE:
-                    gSpaceDown = false;
-
+                    spaceUp();
                     break;
 
                 default:
@@ -60,8 +65,65 @@ bool handleEvents( SDL_Event e )
     return false;
 }
 
-void storeInput( Uint32 time )
+Uint32 gTimerStart = 0;
+std::list<Uint32> gInput; //might want to change the name of this
+
+void spaceDown()
 {
+    if ( !gSpaceDown )
+    {
+        gSpaceDown = true;
+        if ( !gStart )
+        {
+            gStart = true;
+        }
+        else
+        {
+            Uint32 timePassed = SDL_GetTicks() - gTimerStart;
+
+            gInput.push_back( timePassed );
+        }
+
+        gTimerStart = SDL_GetTicks();
+    }
+}
+
+void spaceUp()
+{
+    if ( gSpaceDown )
+    {
+        gSpaceDown = false;
+        Uint32 timePassed = SDL_GetTicks() - gTimerStart;
+
+        gInput.push_back( timePassed );
+
+        gTimerStart = SDL_GetTicks();
+    }
+}
+
+void inputDone()
+{
+    printf( "[" );
+
+    for ( Uint32 i : gInput )
+    {
+        printf( "%d, ", i );
+    }
+
+    printf( "]\n" );
+}
+
+
+/*
+void storeInput()
+{
+
+
+
+
+
+
+
     //printf( "Current Time: %f\n", gCurrentTime );
     //printf( "Current Note: %d\n", gCurrentNote );
     //printf( "Size of gSpacePresses: %d\n", sizeof( gSpacePresses ) );
@@ -93,14 +155,14 @@ void storeInput( Uint32 time )
             gStart = false;
             gCurrentNote = 0;
             printf( "done\n" );
-            /*
+
             printf( "[" );
             for ( int i = 0; i < sizeof( gSpacePresses ) / sizeof( gSpacePresses[0] ); i++ )
             {
                 printf( " %d, ", gSpacePresses[ i ] );
             }
             printf( "]\n" );
-            */
+
         }
 
     }
@@ -109,11 +171,11 @@ void storeInput( Uint32 time )
 void startPlayingInput()
 {
     gPlayInput = true;
-    /*for ( int i = 0; i < sizeof( gSpacePresses ) / sizeof( gSpacePresses[0] ); i++ )
+    for ( int i = 0; i < sizeof( gSpacePresses ) / sizeof( gSpacePresses[0] ); i++ )
     {
 
         playSound( gSpacePresses[ i ], ( int )( ( 60.f * 1000.f ) / gBPM / NOTES_PER_BEAT ) );
-    }*/
+    }
 }
 
 void playInput()
@@ -151,3 +213,4 @@ void playInput()
         }
     }
 }
+*/
