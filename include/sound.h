@@ -7,7 +7,7 @@
 #define BEEP 1
 
 bool loadSound();
-void playSound( int type, int ms );
+void playSound( int type, Uint32 ms );
 void freeSound();
 
 #endif

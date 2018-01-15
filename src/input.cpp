@@ -1,6 +1,10 @@
 #include "../include/input.h"
 #include "../include/sound.h"
 
+//TODO: instead, just start SDL_Timer when space is pressed, then stop when it is released
+//      start it when it is released, then stop when it is started. This way, i can get the durations
+//      between space presses, and the rhythm will be more accurate.
+
 bool gSpaceDown = false;
 bool gStart = false; //Whether user has started inputting rhythm
 bool gPlayInput = false; //whether to play the input
@@ -10,7 +14,7 @@ const int BEATS_PER_MEASURE = 4;
 const int NOTES_PER_BEAT = 64;
 int gBPM = 120.f;
 int gSpacePresses[ NUM_MEASURES * NOTES_PER_BEAT * BEATS_PER_MEASURE] = { 0 }; //shortest note is 64th note //array of 1s and 0s, 1 being on, 0 being off
-float gCurrentTime = 0;
+Uint32 gCurrentTime = 0;
 unsigned int gCurrentNote = 0;
 
 bool handleEvents( SDL_Event e )
@@ -56,7 +60,7 @@ bool handleEvents( SDL_Event e )
     return false;
 }
 
-void storeInput( float time )
+void storeInput( Uint32 time )
 {
     //printf( "Current Time: %f\n", gCurrentTime );
     //printf( "Current Note: %d\n", gCurrentNote );
@@ -74,12 +78,13 @@ void storeInput( float time )
         {
             gCurrentTime += time; //gCurrentTime is in milliseconds
 
-            float noteLength = ( 60.f * 1000.f ) / gBPM / NOTES_PER_BEAT;
+            Uint32 noteLength = round( ( 60.f * 1000.f ) / gBPM / NOTES_PER_BEAT ); //in ms
             if ( gCurrentTime >= noteLength )
             {
-                printf( "Current Time : %f, vs noteLength : %f\n", gCurrentTime, noteLength );
+                //printf( "Current Time : %d, vs noteLength : %d\n", gCurrentTime, noteLength );
                 gSpacePresses[ gCurrentNote ] = gSpaceDown ? BEEP : SILENCE;
-                gCurrentTime = 0;
+                //gCurrentTime = 0;
+                gCurrentTime -= noteLength; //this should compensate for frame lag
                 gCurrentNote++;
             }
         }
@@ -117,10 +122,10 @@ void playInput()
     {
         if ( gCurrentNote < sizeof( gSpacePresses ) / sizeof( gSpacePresses[0] ) )
         {
-            float noteLength = ( 60.f * 1000.f ) / gBPM / NOTES_PER_BEAT;
+            Uint32 noteLength = round( ( 60.f * 1000.f ) / gBPM / NOTES_PER_BEAT ); //in ms
             if ( gSpacePresses[ gCurrentNote ] == BEEP )
             {
-                float totalLength = noteLength;
+                Uint32 totalLength = noteLength;
                 for ( int i = gCurrentNote + 1; i < sizeof( gSpacePresses ) / sizeof( gSpacePresses[0] ); i++ )
                 {
                     //ATTENTION: NEED TO MAKE A CASE IF the for loop meets the i < spacepress length condition
@@ -138,6 +143,11 @@ void playInput()
             }
             playSound( gSpacePresses[ gCurrentNote ], noteLength );
             gCurrentNote++;
+        }
+        else
+        {
+            gPlayInput = false;
+            gCurrentNote = 0;
         }
     }
 }

@@ -17,7 +17,7 @@ bool loadSound()
     return success;
 }
 
-void playSound( int type, int ms )
+void playSound( int type, Uint32 ms )
 {
     if ( type == BEEP )
     {
