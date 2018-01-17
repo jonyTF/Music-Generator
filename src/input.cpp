@@ -1,6 +1,6 @@
 #include "../include/input.h"
 #include "../include/sound.h"
-#include <list>
+#include <vector>
 
 //TODO: instead, just start SDL_Timer when space is pressed, then stop when it is released
 //      start it when it is released, then stop when it is started. This way, i can get the durations
@@ -36,7 +36,7 @@ bool handleEvents( SDL_Event e )
 
                 case SDLK_q:
                     printf( "paly\n" );
-                    //startPlayingInput();
+                    startPlayingInput();
                     break;
 
                 case SDLK_w:
@@ -66,7 +66,9 @@ bool handleEvents( SDL_Event e )
 }
 
 Uint32 gTimerStart = 0;
-std::list<Uint32> gInput; //might want to change the name of this
+std::vector<Uint32> gInput; //might want to change the name of this
+std::vector<Uint32> gInputPlaying; //temporarily store values of gInput so they can be popped when played
+int gCurrentSound = BEEP;
 
 void spaceDown()
 {
@@ -105,14 +107,56 @@ void inputDone()
 {
     printf( "[" );
 
-    for ( Uint32 i : gInput )
+    for ( int i = 0; i < gInput.size(); i++ )
     {
-        printf( "%d, ", i );
+        printf( "%d, ", gInput.at( i ) );
     }
 
     printf( "]\n" );
 }
 
+void startPlayingInput()
+{
+    gPlayInput = true;
+    gInputPlaying = gInput;
+    /*if ( gPlayInput )
+    {
+        for ( int i = 0; i < gInput.size(); i++ )
+        {
+            if ( i % 2 == 0 )
+                playSound( BEEP, gInput.at( i ) );
+            else
+                playSound( SILENCE, gInput.at( i ) );
+        }
+    }
+    */
+}
+
+void playInput()
+{
+    if ( gPlayInput )
+    {
+        if ( gInputPlaying.size() > 0 )
+        {
+            if ( playSound( gCurrentSound == BEEP ? BEEP : SILENCE, gInputPlaying.at( 0 ) ) )
+            {
+                gCurrentSound = gCurrentSound == BEEP ? SILENCE : BEEP;
+                gInputPlaying.erase( gInputPlaying.begin() );
+            }
+        }
+        else
+        {
+            gPlayInput = false;
+        }
+        /*for ( int i = 0; i < gInput.size(); i++ )
+        {
+            if ( i % 2 == 0 )
+                playSound( BEEP, gInput.at( i ) );
+            else
+                playSound( SILENCE, gInput.at( i ) );
+        }*/
+    }
+}
 
 /*
 void storeInput()

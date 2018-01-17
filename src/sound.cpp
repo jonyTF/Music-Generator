@@ -2,6 +2,7 @@
 #include <windows.h>
 
 Mix_Chunk* gBeepSound = NULL;
+Mix_Chunk* gSilence = NULL;
 
 bool loadSound()
 {
@@ -14,21 +15,35 @@ bool loadSound()
         success = false;
     }
 
+    gSilence = Mix_LoadWAV( "sound/silence.wav" ); //doesn't work if you don't run it from in the bin directory
+    if ( gSilence == NULL )
+    {
+        printf( "Could not load silence.wav. Error: %s\n", Mix_GetError() );
+        success = false;
+    }
+
     return success;
 }
 
-void playSound( int type, Uint32 ms )
+bool playSound( int type, Uint32 ms )
 {
-    if ( type == BEEP )
+    //returns true if sound was played, false otherwise
+    if ( !Mix_Playing( 1 ) )
     {
-        Mix_PlayChannelTimed( 1, gBeepSound, -1, ms );
+        printf( "play sound for %d milliseconds\n", ms );
+        if ( type == BEEP )
+        {
+            Mix_PlayChannelTimed( 1, gBeepSound, -1, ms );
+        }
+        else if ( type == SILENCE )
+        {
+            Mix_PlayChannelTimed( 1, gSilence, -1, ms );
+        }
+        return true;
     }
-    else if ( type == SILENCE )
-    {
 
-    }
-
-    Sleep( ms );
+    return false;
+    //Sleep( ms );
 }
 
 void freeSound()
