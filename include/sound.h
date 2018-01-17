@@ -9,5 +9,6 @@
 bool loadSound();
 void playSound( int type, Uint32 ms );
 void freeSound();
+void randlol();
 
 #endif
