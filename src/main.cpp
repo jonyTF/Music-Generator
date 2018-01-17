@@ -38,7 +38,6 @@ int main( int argc, char* argv[] )
                 }
 
                 //storeInput();
-                playInput();
 
                 render();
             }
@@ -93,6 +92,7 @@ bool init()
 void close()
 {
     freeSound();
+    closeInput();
 
     SDL_DestroyRenderer( gRenderer );
     SDL_DestroyWindow( gWindow );

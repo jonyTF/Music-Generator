@@ -2,6 +2,7 @@
 #define LSDL_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_thread.h>
 #include <SDL2/SDL_mixer.h>
 #include <stdio.h>
 #include <math.h>

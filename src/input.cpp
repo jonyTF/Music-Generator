@@ -70,6 +70,8 @@ std::vector<Uint32> gInput; //might want to change the name of this
 std::vector<Uint32> gInputPlaying; //temporarily store values of gInput so they can be popped when played
 int gCurrentSound = BEEP;
 
+SDL_Thread* playInputThread = NULL;
+
 void spaceDown()
 {
     if ( !gSpaceDown )
@@ -118,7 +120,10 @@ void inputDone()
 void startPlayingInput()
 {
     gPlayInput = true;
-    gInputPlaying = gInput;
+
+    playInputThread = SDL_CreateThread( playInput, "playInputThread", ( void* )NULL );
+
+    //gInputPlaying = gInput;
     /*if ( gPlayInput )
     {
         for ( int i = 0; i < gInput.size(); i++ )
@@ -132,6 +137,27 @@ void startPlayingInput()
     */
 }
 
+int playInput( void* data )
+{
+    for ( int i = 0; i < gInput.size(); i++ )
+    {
+        if ( i % 2 == 0 )
+            playSound( BEEP, gInput.at( i ) );
+        else
+            playSound( SILENCE, gInput.at( i ) );
+    }
+
+    printf( "done.\n" );
+
+    return 0;
+}
+
+void closeInput()
+{
+    SDL_WaitThread( playInputThread, NULL );
+}
+
+/*
 void playInput()
 {
     if ( gPlayInput )
@@ -148,15 +174,9 @@ void playInput()
         {
             gPlayInput = false;
         }
-        /*for ( int i = 0; i < gInput.size(); i++ )
-        {
-            if ( i % 2 == 0 )
-                playSound( BEEP, gInput.at( i ) );
-            else
-                playSound( SILENCE, gInput.at( i ) );
-        }*/
     }
 }
+*/
 
 /*
 void storeInput()

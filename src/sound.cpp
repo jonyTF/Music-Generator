@@ -25,25 +25,19 @@ bool loadSound()
     return success;
 }
 
-bool playSound( int type, Uint32 ms )
+void playSound( int type, Uint32 ms )
 {
-    //returns true if sound was played, false otherwise
-    if ( !Mix_Playing( 1 ) )
+    printf( "play sound for %d milliseconds\n", ms );
+    if ( type == BEEP )
     {
-        printf( "play sound for %d milliseconds\n", ms );
-        if ( type == BEEP )
-        {
-            Mix_PlayChannelTimed( 1, gBeepSound, -1, ms );
-        }
-        else if ( type == SILENCE )
-        {
-            Mix_PlayChannelTimed( 1, gSilence, -1, ms );
-        }
-        return true;
+        Mix_PlayChannelTimed( 1, gBeepSound, -1, ms );
+    }
+    else if ( type == SILENCE )
+    {
+        Mix_PlayChannelTimed( 1, gSilence, -1, ms );
     }
 
-    return false;
-    //Sleep( ms );
+    Sleep( ms );
 }
 
 void freeSound()
