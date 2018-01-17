@@ -10,6 +10,7 @@ int playInput( void* data );
 void spaceDown();
 void spaceUp();
 void inputDone();
+void quantizeInput();
 void closeInput();
 
 #endif
