@@ -1,6 +1,10 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+#include <ctime>
+#include <vector>
+#include <windows.h>
+
 #include "LSDL.h"
 
 bool handleEvents( SDL_Event e ); //returns whether or not to quit

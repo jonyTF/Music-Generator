@@ -1,7 +1,5 @@
 #include "../include/input.h"
 #include "../include/sound.h"
-#include <vector>
-#include <windows.h>
 
 //TODO: instead, just start SDL_Timer when space is pressed, then stop when it is released
 //      start it when it is released, then stop when it is started. This way, i can get the durations
@@ -119,6 +117,8 @@ void startPlayingInput()
 
 int playInput( void* data )
 {
+    srand(time( NULL ));
+
     for ( int i = 0; i < gInput.size(); i++ )
     {
         if ( i % 2 == 0 )

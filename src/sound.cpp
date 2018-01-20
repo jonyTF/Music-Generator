@@ -1,6 +1,4 @@
 #include "../include/sound.h"
-#include <windows.h>
-#include <ctime>
 
 Mix_Chunk* gBeepSound = NULL;
 Mix_Chunk* gSilence = NULL;
@@ -8,7 +6,6 @@ Mix_Chunk* gSilence = NULL;
 bool loadSound()
 {
     //initialize random
-    srand(time( NULL ));
 
     bool success = true;
 
